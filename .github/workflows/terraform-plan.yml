@@ -1,31 +1,29 @@
-name: "Terraform action"
+name: "Terraform Plan"
 on:
-  push:
+  pull_request:
     branches:
       - main
-  pull_request:
+
 permissions:
   id-token: write # This is required for aws oidc connection
   contents: read # This is required for actions/checkout
   pull-requests: write # This is required for gh bot to comment PR
+
 env:
   TF_LOG: INFO
   AWS_REGION: ${{ secrets.AWS_REGION }}
+
 jobs:
-  deploy:
+  terraform-plan:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: .
     steps:
-      - name: Git checkout
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Configure AWS credentials from AWS account
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
           role-session-name: GitHub-OIDC-TERRAFORM
 
@@ -37,14 +35,17 @@ jobs:
       - name: Terraform fmt
         id: fmt
         run: terraform fmt -check
-        continue-on-error: true
 
       - name: Terraform Init
         id: init
         env:
-          AWS_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
-          AWS_BUCKET_KEY_NAME: ${{ secrets.AWS_S3_BUCKET_KEY_NAME }}
-        run: terraform init -backend-config="bucket=${AWS_S3_BUCKET_NAME}" -backend-config="key=${AWS_S3_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
+          AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
+          AWS_S3_BUCKET_KEY_NAME: ${{ secrets.AWS_S3_BUCKET_KEY_NAME }}
+        run: |
+          terraform init \
+            -backend-config="bucket=${AWS_S3_BUCKET_NAME}" \
+            -backend-config="key=${AWS_S3_BUCKET_KEY_NAME}" \
+            -backend-config="region=${AWS_REGION}"
 
       - name: Terraform Validate
         id: validate
@@ -53,11 +54,36 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: terraform plan -no-color
-        if: github.event_name == 'pull_request'
-        continue-on-error: true
 
-      - uses: actions/github-script@v6
+      - name: Delete Previous Plan Comment
         if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            const botComment = comments.find(comment => comment.body.includes('#### Terraform Plan 📖'));
+
+            if (botComment) {
+              await github.rest.issues.deleteComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+              });
+              console.log('Previous comment deleted.');
+            } else {
+              console.log('No previous comment found.');
+            }
+
+      - name: Post Plan Output to PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
@@ -92,11 +118,3 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
-
-      - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
-        run: exit 1
-
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -input=false
