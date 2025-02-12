@@ -55,6 +55,32 @@ jobs:
         id: plan
         run: terraform plan -no-color
 
+      - name: Delete Previous Plan Comment
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            const botComment = comments.find(comment => comment.body.includes('#### Terraform Plan 📖'));
+
+            if (botComment) {
+              await github.rest.issues.deleteComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+              });
+              console.log('Previous comment deleted.');
+            } else {
+              console.log('No previous comment found.');
+            }
+
       - name: Post Plan Output to PR
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v6
