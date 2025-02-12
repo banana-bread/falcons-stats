@@ -1,4 +1,4 @@
-from falcons_stats.scripts.scraper import Scraper
+from falcons_stats.tools.scraper import Scraper
 
 def main():
     scraper = Scraper()
