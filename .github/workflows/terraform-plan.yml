@@ -42,16 +42,16 @@ jobs:
       #       -backend-config="bucket=falcons-stats-tf-state" \
       #       -backend-config="key=terraform/state" \
       #       -backend-config="region=us-east-1"
-
       - name: Terraform Init
         id: init
         env:
           AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
           AWS_S3_BUCKET_KEY_NAME: ${{ secrets.AWS_S3_BUCKET_KEY_NAME }}
-        run: terraform init \
-          -backend-config="bucket=${AWS_S3_BUCKET_NAME}" \
-          -backend-config="key=${AWS_S3_BUCKET_KEY_NAME}" \
-          -backend-config="region=${AWS_REGION}"
+        run: |
+          terraform init \
+            -backend-config="bucket=${AWS_S3_BUCKET_NAME}" \
+            -backend-config="key=${AWS_S3_BUCKET_KEY_NAME}" \
+            -backend-config="region=${AWS_REGION}"
 
       - name: Terraform Validate
         id: validate
