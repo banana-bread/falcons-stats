@@ -36,12 +36,6 @@ jobs:
         id: fmt
         run: terraform fmt -check
 
-      #   - name: Terraform Init
-      #     run: |
-      #       terraform init \
-      #       -backend-config="bucket=falcons-stats-tf-state" \
-      #       -backend-config="key=terraform/state" \
-      #       -backend-config="region=us-east-1"
       - name: Terraform Init
         id: init
         env:
