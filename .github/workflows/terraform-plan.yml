@@ -38,6 +38,9 @@ jobs:
 
       - name: Terraform Init
         run: |
+          rm -rf .terraform \
+          && rm terraform.tfstate \
+          && rm terraform.tfstate.backup \
           terraform init \
           -backend-config="bucket=falcons-stats-tf-state" \
           -backend-config="key=terraform/state" \
