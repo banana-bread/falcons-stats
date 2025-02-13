@@ -5,10 +5,24 @@ terraform {
     region = "us-east-1"
   }
 }
+
+resource "aws_eip" "falcons_stats_server_ip" {
+  instance = aws_instance.falcons_stats_server.id
+
+  tags = {
+    Name = "FalconsStatsElasticIP"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 resource "aws_instance" "falcons_stats_server" {
   ami             = "ami-085ad6ae776d8f09c"
   instance_type   = "t2.micro"
   security_groups = [aws_security_group.instances.name]
+  vpc_security_group_ids = [aws_security_group.instances.id]
 
   tags = {
     Name = "FalconsStatsEC2Instance"
