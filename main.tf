@@ -19,9 +19,9 @@ resource "aws_eip" "falcons_stats_server_ip" {
 }
 
 resource "aws_instance" "falcons_stats_server" {
-  ami             = "ami-085ad6ae776d8f09c"
-  instance_type   = "t2.micro"
-  security_groups = [aws_security_group.instances.name]
+  ami                    = "ami-085ad6ae776d8f09c"
+  instance_type          = "t2.micro"
+  security_groups        = [aws_security_group.instances.name]
   vpc_security_group_ids = [aws_security_group.instances.id]
 
   tags = {
