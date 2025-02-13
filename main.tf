@@ -37,7 +37,7 @@ resource "aws_security_group_rule" "allow_http_inbound" {
 
 module "session_manager" {
   source  = "bridgecrewio/session-manager/aws"
-  version = "1.3.0"
+  version = "0.4"
 
   enable_cloudwatch_logs = false
   enable_s3_logs         = false
