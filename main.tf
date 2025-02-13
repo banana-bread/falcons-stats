@@ -42,8 +42,8 @@ module "session_manager" {
   enable_log_to_s3         = false
   enable_log_to_cloudwatch = false
   # these are requied, even though I set logging to false
-  access_log_bucket_name   = "dummy-bucket"
-  bucket_name              = "dummy-bucket"
+  access_log_bucket_name = "dummy-bucket"
+  bucket_name            = "dummy-bucket"
 }
 
 resource "aws_instance" "falcons_stats_server" {
