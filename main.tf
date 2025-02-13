@@ -36,10 +36,10 @@ resource "aws_security_group_rule" "allow_http_inbound" {
 }
 
 module "session_manager" {
-  source                    = "bridgecrewio/session-manager/aws"
-  version                   = "0.4"
-  enable_log_to_s3          = false
-  enable_log_to_cloudwatch  = false
+  source                   = "bridgecrewio/session-manager/aws"
+  version                  = "0.4"
+  enable_log_to_s3         = false
+  enable_log_to_cloudwatch = false
 }
 
 resource "aws_instance" "falcons_stats_server" {
