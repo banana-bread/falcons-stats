@@ -11,7 +11,7 @@ permissions:
 
 env:
   TF_LOG: INFO
-  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_REGION: us-east-1
 
 jobs:
   terraform-plan:
@@ -24,7 +24,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: us-east-1
           role-session-name: GitHub-OIDC-TERRAFORM
 
       - name: Setup Terraform
@@ -35,28 +35,23 @@ jobs:
       - name: Terraform fmt
         id: fmt
         run: terraform fmt -check
+        continue-on-error: false
 
       - name: Terraform Init
         id: init
-        env:
-          AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
-          AWS_S3_BUCKET_KEY_NAME: ${{ secrets.AWS_S3_BUCKET_KEY_NAME }}
-        run: |
-          terraform init \
-            -backend-config="bucket=${AWS_S3_BUCKET_NAME}" \
-            -backend-config="key=${AWS_S3_BUCKET_KEY_NAME}" \
-            -backend-config="region=${AWS_REGION}"
+        run: terraform init
 
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
+        continue-on-error: false
 
       - name: Terraform Plan
         id: plan
         run: terraform plan -no-color
 
       - name: Delete Previous Plan Comment
-        if: github.event_name == 'pull_request'
+        if: steps.plan.outcome == 'success' &&github.event_name == 'pull_request'
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -67,7 +62,7 @@ jobs:
               repo: context.repo.repo,
             });
 
-            const botComment = comments.find(comment => comment.body.includes('#### Terraform Plan 📖'));
+            const botComment = comments.find(comment => comment.body.includes('<!-- terraform-plan-comment -->'));
 
             if (botComment) {
               await github.rest.issues.deleteComment({
@@ -89,7 +84,9 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            const output = `
+            <!-- terraform-plan-comment -->
+            #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
             <details><summary>Validation Output</summary>
