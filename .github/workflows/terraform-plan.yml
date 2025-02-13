@@ -3,6 +3,9 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - "**/*.tf"
+      - "**/*.tfvars"
 
 permissions:
   id-token: write # This is required for aws oidc connection
@@ -32,6 +35,7 @@ jobs:
         with:
           terraform_version: 1.2.5
 
+      # TODO: should be a pre-commit hook
       - name: Terraform fmt
         id: fmt
         run: terraform fmt -check
@@ -41,6 +45,7 @@ jobs:
         id: init
         run: terraform init
 
+      # TODO: should be a pre-commit hook
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color

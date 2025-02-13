@@ -37,15 +37,9 @@ class Scraper:
         return self._mock_parsing(raw_response)
     
     def _mock_parsing(self, raw_response):
-        return {
-            92: [
-                { "player_name": "Travis FENNING", "team_name": "Ottawa Falcons Azzurri MR2", "goals": 15 },
-            ],
-            67: [
-                { "player_name": "Adriano DRAMISINO", "team_name": "Falcons Red MC2", "goals": 5 },
-                { "player_name": "Ryan MORRISON", "team_name": "Falcons Red MC2", "goals": 5 },
-            ],
-            29: [
-                { "player_name": "Jennifer FURMAN", "team_name": "Ottawa Falcons WR2", "goals": 19 },
-            ],
-        }
+        return [
+            { "player_name": "Travis FENNING", "team_name": "Ottawa Falcons Azzurri MR2", "division_id": 92, "goals": 15 },
+            { "player_name": "Adriano DRAMISINO", "team_name": "Falcons Red MC2", "division_id": 67, "goals": 5 },
+            { "player_name": "Ryan MORRISON", "team_name": "Falcons Red MC2", "division_id": 67, "goals": 5 },
+            { "player_name": "Jennifer FURMAN", "team_name": "Ottawa Falcons WR2", "division_id": 29, "goals": 19 },
+        ]
