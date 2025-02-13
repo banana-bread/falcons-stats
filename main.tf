@@ -18,17 +18,6 @@ resource "aws_eip" "falcons_stats_server_ip" {
   }
 }
 
-resource "aws_instance" "falcons_stats_server" {
-  ami                    = "ami-085ad6ae776d8f09c"
-  instance_type          = "t2.micro"
-  security_groups        = [aws_security_group.instances.name]
-  vpc_security_group_ids = [aws_security_group.instances.id]
-
-  tags = {
-    Name = "FalconsStatsEC2Instance"
-  }
-}
-
 resource "aws_security_group" "instances" {
   name = "falcons-stats-server-security-group"
 
@@ -44,4 +33,24 @@ resource "aws_security_group_rule" "allow_http_inbound" {
   to_port           = 8080
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
+}
+
+module "session_manager" {
+  source  = "bridgecrewio/session-manager/aws"
+  version = "1.3.0"
+
+  enable_cloudwatch_logs = false
+  enable_s3_logs         = false
+  enable_vpc_endpoints   = false
+}
+
+resource "aws_instance" "falcons_stats_server" {
+  ami                    = "ami-085ad6ae776d8f09c"
+  instance_type          = "t2.micro"
+  iam_instance_profile   = module.session_manager.instance_profile_name
+  vpc_security_group_ids = [aws_security_group.instances.id]
+
+  tags = {
+    Name = "FalconsStatsEC2Instance"
+  }
 }
