@@ -35,11 +35,15 @@ resource "aws_security_group_rule" "allow_http_inbound" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
+# project seems dead, should fork it at some point
 module "session_manager" {
   source                   = "bridgecrewio/session-manager/aws"
   version                  = "0.4"
   enable_log_to_s3         = false
   enable_log_to_cloudwatch = false
+  # these are requied, even though I set logging to false
+  access_log_bucket_name   = "dummy-bucket"
+  bucket_name              = "dummy-bucket"
 }
 
 resource "aws_instance" "falcons_stats_server" {
