@@ -1,8 +1,8 @@
 terraform {
   backend "s3" {
-    bucket = var.s3_bucket_name
-    key    = var.s3_bucket_key_name
-    region = var.aws_region
+    bucket = "falcons-stats-terraform-state"
+    key    = "terraform/state"
+    region = "us-east-1"
   }
 }
 resource "aws_instance" "falcons_stats_server" {
