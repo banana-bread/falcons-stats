@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket = "falcons-stats-terraform-state"
-    key    = "terraform/state"
+    key    = "state"
     region = "us-east-1"
   }
 }
