@@ -1,6 +1,7 @@
 */__pycache__
 falcons_stats.db
 .env
+dist
 
 # Local .terraform directories
 **/.terraform/*
