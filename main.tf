@@ -38,7 +38,7 @@ resource "aws_security_group_rule" "allow_http_inbound" {
 #Create a role
 #https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role
 resource "aws_iam_role" "ec2_role" {
-  name = "app1-ec2-role"
+  name = "falcons-ec2-ssm-role"
 
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
@@ -67,7 +67,7 @@ resource "aws_iam_role_policy_attachment" "custom" {
 #Attach role to an instance profile
 #https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile
 resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "app1-ec2-profile"
+  name = "falcons-stats-ec2-profile"
   role = aws_iam_role.ec2_role.name
 }
 
