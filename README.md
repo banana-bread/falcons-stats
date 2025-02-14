@@ -13,25 +13,29 @@ A Python-based project for scraping, managing, and serving soccer stats for Otta
 ### 1. Install dependencies with poetry
 
 ```
-poetry install
+$ poetry install
 ```
 
 ### 2. Create the sqlite database
 
 ```
-sqlite3 falcons-stats.db
+$ sqlite3 falcons-stats.db
 ```
 
 ### 3. Create the database schema
 
 ```
-poetry run python scripts/create_db.py
+$ poetry run python scripts/create_db.py
 ```
 
 ### 4. Seed the database
 
 ```
-poetry run python scripts/seed_data.py
+$ poetry run python scripts/seed_data.py
 ```
 
-### 5. To be continued...
+### 5. To run flask server
+
+```
+$ flask --app falcons_stats.api run
+```
