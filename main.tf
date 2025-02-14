@@ -38,7 +38,6 @@ resource "aws_security_group_rule" "allow_http_inbound" {
 resource "aws_instance" "falcons_stats_server" {
   ami                    = "ami-085ad6ae776d8f09c"
   instance_type          = "t2.micro"
-  iam_instance_profile   = aws_iam_instance_profile.ec2_ssm_profile.name
   vpc_security_group_ids = [aws_security_group.instances.id]
 
   tags = {
