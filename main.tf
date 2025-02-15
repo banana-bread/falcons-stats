@@ -76,6 +76,21 @@ resource "aws_instance" "falcons_stats_server" {
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.instances.id]
   iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
+  user_data              = <<-EOF
+    #!/bin/bash
+    set -e
+    echo "Running user_data script..."
+
+    # Update packages and install the SSM Agent
+    sudo apt-get update -y
+    sudo snap install amazon-ssm-agent --classic || echo "SSM Agent already installed."
+
+    # Ensure the SSM Agent is running
+    sudo systemctl enable amazon-ssm-agent
+    sudo systemctl start amazon-ssm-agent
+
+    echo "SSM Agent setup complete."
+  EOF
   tags = {
     Name = "FalconsStatsEC2Instance"
   }
