@@ -46,7 +46,7 @@ resource "aws_security_group_rule" "allow_ssh_inbound" {
 
 resource "aws_key_pair" "falcons_stats_ssh_key" {
   key_name   = "falcons-stats-server-ssh-key"
-  public_key = file("${path.module}/falcons-stats-server-key.pub") # INFO: ensure this exists
+  public_key = file("${path.module}/falcons-stats-server-ssh-key.pub") # INFO: ensure this exists
 }
 
 resource "aws_instance" "falcons_stats_server" {
