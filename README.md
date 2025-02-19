@@ -39,3 +39,46 @@ $ poetry run python scripts/seed_data.py
 ```
 $ flask --app falcons_stats.api run
 ```
+
+### Misc
+
+allow inbound traffic on port 22 (ssh) from my ip
+
+```
+aws ec2 authorize-security-group-ingress \
+  --group-id <sg-id> \
+  --protocol tcp \
+  --port 22 \
+  --cidr $(curl -s https://checkip.amazonaws.com)/32
+```
+
+revoke inbound traffic on port 22
+
+```
+aws ec2 revoke-security-group-ingress \
+  --group-id <sg-id> \
+  --protocol tcp \
+  --port 22 \
+  --cidr $(curl -s https://checkip.amazonaws.com)/32
+```
+
+create ssh-key pair locally
+
+```
+ssh-keygen -t rsa -b 4096 -C "ssh-key-name" -f ssh-key-name
+
+```
+
+then associate it with the ec2 instance in `main.tf`
+
+```
+resource "aws_instance" "falcons_stats_server" {
+  ami                    = "ami-053a45fff0a704a47"
+  instance_type          = "t2.micro"
+  vpc_security_group_ids = [aws_security_group.instances.id]
+  key_name               = "falcons-stats-server-ssh-key"
+  tags = {
+    Name = "FalconsStatsEC2Instance"
+  }
+}
+```

@@ -13,9 +13,9 @@ resource "aws_eip" "falcons_stats_server_ip" {
     Name = "FalconsStatsElasticIP"
   }
 
-  lifecycle {
-    prevent_destroy = true
-  }
+    lifecycle {
+      prevent_destroy = true
+    }
 }
 
 resource "aws_security_group" "instances" {
@@ -35,62 +35,25 @@ resource "aws_security_group_rule" "allow_http_inbound" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
-#Create a role
-#https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role
-resource "aws_iam_role" "ec2_role" {
-  name = "falcons-ec2-ssm-role"
-
-  # Terraform's "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Sid    = ""
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        }
-      },
-    ]
-  })
+resource "aws_security_group_rule" "allow_ssh_inbound" {
+  type              = "ingress"
+  security_group_id = aws_security_group.instances.id
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"] # WARNING: This allows SSH from anywhere!
 }
 
-#Attach role to policy
-#https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment
-resource "aws_iam_role_policy_attachment" "custom" {
-  role       = aws_iam_role.ec2_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-}
-
-#Attach role to an instance profile
-#https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile
-resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "falcons-stats-ec2-profile"
-  role = aws_iam_role.ec2_role.name
+resource "aws_key_pair" "falcons_stats_ssh_key" {
+  key_name   = "falcons-stats-server-ssh-key"
+  public_key = file("~/.ssh/falcons-stats-server-ssh-key.pub") # INFO: ensure this exists on your local machine
 }
 
 resource "aws_instance" "falcons_stats_server" {
-  ami                    = "ami-085ad6ae776d8f09c"
+  ami                    = "ami-053a45fff0a704a47"
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.instances.id]
-  iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
-  user_data              = <<-EOF
-    #!/bin/bash
-    set -e
-    echo "Running user_data script..."
-
-    # Update packages and install the SSM Agent
-    sudo apt-get update -y
-    sudo snap install amazon-ssm-agent --classic || echo "SSM Agent already installed."
-
-    # Ensure the SSM Agent is running
-    sudo systemctl enable amazon-ssm-agent
-    sudo systemctl start amazon-ssm-agent
-
-    echo "SSM Agent setup complete."
-  EOF
+  key_name               = "falcons-stats-server-key"
   tags = {
     Name = "FalconsStatsEC2Instance"
   }
