@@ -40,45 +40,25 @@ $ poetry run python scripts/seed_data.py
 $ flask --app falcons_stats.api run
 ```
 
-### Misc
+## Deploy to production
 
-allow inbound traffic on port 22 (ssh) from my ip
+- Infra described in `main.tf` see the `terraform-plan` is run when pr's are opened against main, `terraform-apply` is run on merges to main
 
-```
-aws ec2 authorize-security-group-ingress \
-  --group-id <sg-id> \
-  --protocol tcp \
-  --port 22 \
-  --cidr $(curl -s https://checkip.amazonaws.com)/32
-```
+### Using aws session manager
 
-revoke inbound traffic on port 22
+prerequisites:
 
-```
-aws ec2 revoke-security-group-ingress \
-  --group-id <sg-id> \
-  --protocol tcp \
-  --port 22 \
-  --cidr $(curl -s https://checkip.amazonaws.com)/32
-```
+- session-manager-plugin
+- aws-cli
 
-create ssh-key pair locally
+1. Find instance id (should make this a script really)
 
 ```
-ssh-keygen -t rsa -b 4096 -C "ssh-key-name" -f ssh-key-name
-
+aws ec2 describe-instances --filters "Name=tag:Name,Values=FalconsStatsEC2Instance" --query "Reservations[].Instances[].InstanceId" --output text
 ```
 
-then associate it with the ec2 instance in `main.tf`
+2. connect to target
 
 ```
-resource "aws_instance" "falcons_stats_server" {
-  ami                    = "ami-053a45fff0a704a47"
-  instance_type          = "t2.micro"
-  vpc_security_group_ids = [aws_security_group.instances.id]
-  key_name               = "falcons-stats-server-ssh-key"
-  tags = {
-    Name = "FalconsStatsEC2Instance"
-  }
-}
+aws ssm start-session --target <instance_id>
 ```
