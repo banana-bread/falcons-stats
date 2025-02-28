@@ -18,7 +18,7 @@ jobs:
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::123456789012:role/GithubActionsOIDCRole
+          role-to-assume: ${{ secrets.AWS_GITHUB_OIDC_ROLE_ARN }}
           aws-region: us-east-1
 
       - name: Deploy via AWS SSM
@@ -28,7 +28,7 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --comment "Deploy Flask API" \
             --parameters '{"commands":[
-              "cd /home/ec2-user/falcons-stats",
+              "cd /home/ssm-user/falcons-stats",
               "git pull origin main",
               "poetry install --no-dev --no-interaction",
               "sudo systemctl restart falcons-stats.service"
