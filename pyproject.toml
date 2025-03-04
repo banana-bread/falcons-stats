@@ -6,11 +6,12 @@ authors = [
     {name = "adriano",email = "72319679+banana-bread@users.noreply.github.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.9"
 dependencies = [
     "requests (>=2.32.3,<3.0.0)",
     "python-dotenv (>=1.0.1,<2.0.0)",
-    "flask (>=3.1.0,<4.0.0)"
+    "flask (>=3.1.0,<4.0.0)",
+    "gunicorn (>=23.0.0,<24.0.0)"
 ]
 
 
