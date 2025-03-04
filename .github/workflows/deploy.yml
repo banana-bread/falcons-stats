@@ -29,7 +29,8 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --comment "Deploy Falcons Stats Flask API" \
             --parameters '{"commands":[
-              "git config --global --add safe.directory /home/ssm-user/falcons-stats",
+              "export HOME=/home/ssm-user",
+              "git config --system --add safe.directory /home/ssm-user/falcons-stats",
               "cd /home/ssm-user/falcons-stats",
               "git pull origin main",
               "/home/ssm-user/.local/bin/poetry install --no-interaction",
