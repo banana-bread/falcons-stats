@@ -75,7 +75,7 @@ jobs:
           fi
 
           # Also fail if there's anything in STDERR
-          if [[ -n "$STDERR" && "$STDERR" != "None" ]]; then
+          if [[ -n "$STDERR" && "$STDERR" != "None" && "$STDERR" != *"FETCH_HEAD"* && "$STDERR" != *"Already up to date."* ]]; then
             echo "Errors detected in command output!"
             exit 1
           fi
