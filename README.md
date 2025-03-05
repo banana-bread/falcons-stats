@@ -37,7 +37,7 @@ $ poetry run python scripts/seed_data.py
 ### 5. To run flask server
 
 ```
-$ flask --app falcons_stats.api run
+$ poetry run flask --app falcons_stats.api:app run --debug
 ```
 
 ## Deploy to production
