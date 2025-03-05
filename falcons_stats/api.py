@@ -1,10 +1,10 @@
-from flask import Flask
+from flask import Blueprint
 import re
 
-app = Flask(__name__)
+api = Blueprint('api', __name__)
 
-@app.route('/leading-scorers')
-def hello_world():
+@api.route('/leading-scorers')
+def leading_scorers():
     return {
         'goal_scorers': _mock_db_call_for_top_scorers()
     }
