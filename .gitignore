@@ -1,8 +1,14 @@
-*/__pycache__
 instance/config.py
 instance/falcons_stats.sqlite
 .env
 dist
+
+# Ignore all __pycache__ directories
+**/__pycache__/
+
+# Ignore all Python compiled files
+**/*.py[cod]
+**/*$py.class
 
 # Local .terraform directories
 **/.terraform/*
@@ -41,3 +47,8 @@ terraform.rc
 
 .terraform.lock.hcl
 .terraform
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride

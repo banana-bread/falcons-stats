@@ -32,4 +32,9 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
+    # Initialize models
+    from .models import init_models
+    init_models(app)
+
+
     return app
