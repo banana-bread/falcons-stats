@@ -7,14 +7,11 @@ class Division(Base):
     __tablename__ = "divisions"
     
     # Attributes
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True) # Mapped to OCSL division id
     name: Mapped[str] = mapped_column(String(100), unique=True)
     
     # Relationships
-    players: Mapped[List["Player"]] = relationship( # type: ignore
-        back_populates="division", cascade="all, delete-orphan"
-    )
-    keepers: Mapped[List["Keeper"]] = relationship( # type: ignore
+    teams: Mapped[List["Team"]] = relationship( # type: ignore
         back_populates="division", cascade="all, delete-orphan"
     )
     
@@ -23,8 +20,4 @@ class Division(Base):
     
     @property
     def serialize(self) -> dict:
-        """Return object data in easily serializable format"""
-        return {
-            'id': self.id,
-            'name': self.name
-        }
+        return { 'id': self.id, 'name': self.name }
