@@ -31,7 +31,13 @@ $ poetry run flask --app falcons_stats shell
 ### 5. To run flask dev server
 
 ```
-$ poetry run flask --app falcons_stats run --debug
+$ poetry run dev
+```
+
+### 6. To debug like pry in ruby/rails. see [docs](https://pypi.org/project/ipdb/) for more info
+
+```
+import ipdb;ipdb.set_trace()
 ```
 
 ## Deploy to production

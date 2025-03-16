@@ -13,7 +13,8 @@ dependencies = [
     "flask (>=3.1.0,<4.0.0)",
     "gunicorn (>=23.0.0,<24.0.0)",
     "flask-sqlalchemy (>=3.1.1,<4.0.0)",
-    "click (>=8.1.8,<9.0.0)"
+    "click (>=8.1.8,<9.0.0)",
+    "ipdb (>=0.13.13,<0.14.0)"
 ]
 
 
@@ -21,5 +22,5 @@ dependencies = [
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-# [tool.poetry.scripts]
-# main = "falcons_stats_scraper.main:main"
+[tool.poetry.scripts]
+dev = "falcons_stats.scripts:run_dev_server"
