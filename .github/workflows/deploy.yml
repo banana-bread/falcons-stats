@@ -32,7 +32,7 @@ jobs:
               "export HOME=/home/ssm-user",
               "git config --system --add safe.directory /home/ssm-user/falcons-stats",
               "cd /home/ssm-user/falcons-stats",
-              "sudo runuser -l ssm-user -c \"cd /home/ssm-user/falcons-stats && git pull origin main\"",
+              "sudo runuser -l ssm-user -c \"cd /home/ssm-user/falcons-stats && git reset --hard HEAD && git clean -fd && git pull origin main\"",
               "/home/ssm-user/.local/bin/poetry install --no-interaction",
               "sudo systemctl restart falcons-stats"
             ]}' \
@@ -68,9 +68,11 @@ jobs:
           echo "SSM Command Error:"
           echo "$STDERR"
 
+
           # If the command failed, force GitHub Actions to fail
-          if [[ "$STATUS" != "Success" ]]; then
-            echo "SSM Command Failed with status: $STATUS"
+          if [[ "$STATUS" != "Success" || (-n "$STDERR" && "$STDERR" != "None") ]]; then
+            echo "Deployment failed with status: $STATUS"
+            echo "Error output: $STDERR"
             exit 1
           fi
 
