@@ -76,8 +76,15 @@ jobs:
             exit 1
           fi
 
-          # Also fail if there's anything in STDERR
-          if [[ -n "$STDERR" && "$STDERR" != "None" && "$STDERR" != *"FETCH_HEAD"* && "$STDERR" != *"Already up to date."* ]]; then
+          # Check for, and fail on errors
+          if [[ "$STATUS" != "Success" ]]; then
+            echo "Deployment failed with status: $STATUS"
+            exit 1
+          elif [[ -n "$STDERR" && "$STDERR" != "None" && 
+                  ! "$STDERR" =~ "branch main -> FETCH_HEAD" && 
+                  ! "$STDERR" =~ "-> origin/main" && 
+                  ! "$STDERR" =~ "Already up to date" ]]; then
             echo "Errors detected in command output!"
+            echo "$STDERR"
             exit 1
           fi
