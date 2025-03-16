@@ -68,24 +68,12 @@ jobs:
           echo "SSM Command Error:"
           echo "$STDERR"
 
-
-          # If the command failed, force GitHub Actions to fail
-          if [[ "$STATUS" != "Success" || (-n "$STDERR" && "$STDERR" != "None") ]]; then
-            echo "Deployment failed with status: $STATUS"
-            echo "Error output: $STDERR"
-            exit 1
-          fi
-
-          # Check for, and fail on errors
+          # Check command status first
           if [[ "$STATUS" != "Success" ]]; then
             echo "Deployment failed with status: $STATUS"
             exit 1
-          elif [[ -n "$STDERR" && "$STDERR" != "None" && 
-                  ! "$STDERR" =~ "From github" &&  
-                  ! "$STDERR" =~ "branch main" &&
-                  ! "$STDERR" =~ "origin/main" &&
-                  ! "$STDERR" =~ "Already up to date" ]]; then
-            echo "Errors detected in command output!"
+          elif [[ "$STDERR" == *"fatal:"* || "$STDERR" == *"error:"* || "$STDERR" == *"Aborting"* ]]; then
+            echo "Git errors detected:"
             echo "$STDERR"
             exit 1
           fi
