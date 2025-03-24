@@ -31,7 +31,10 @@ def init_log_handler(app: Flask):
     
     # Add a CloudWatch handler if in production
     if environment == 'production':
-        handler = watchtower.CloudWatchLogHandler(log_group_name=app.name)
+        handler = watchtower.CloudWatchLogHandler(
+            log_group_name=app.name,
+            log_stream_name=app.name
+        )
         handler.setFormatter(fmt)
         app.logger.addHandler(handler)
         logging.getLogger("werkzeug").addHandler(handler)
