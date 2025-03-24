@@ -6,10 +6,6 @@ from flask import Flask
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'falcons_stats.sqlite'),
-    )
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -35,5 +31,9 @@ def create_app(test_config=None):
     # Initialize models
     from .models import init_models
     init_models(app)
+
+    # Initialize logging
+    from .logger import init_log_handler, logger
+    init_log_handler(app)
 
     return app
