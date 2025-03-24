@@ -184,3 +184,12 @@ sudo systemctl restart nginx
 ```
 sudo systemctl enable nginx
 ```
+
+## Logging
+
+mostly followed this guide: https://betterstack.com/community/guides/logging/how-to-start-logging-with-python/#structured-json-logging-in-python
+
+logs are:
+
+- structured as json, i.e. machine parseable
+- added a cloudwatch handler for production
