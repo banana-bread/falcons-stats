@@ -7,30 +7,32 @@ logger = logging.getLogger(__name__)
 def init_log_handler(app: Flask):
     environment = app.config.get('ENVIRONMENT', 'production')
     log_level = logging.DEBUG if environment == 'development' else logging.INFO
-
-    # Configure root logger to use JSON format for console output
-    root_logger = logging.getLogger()
-    root_logger.setLevel(log_level)
-
-    # Remove any existing handlers to avoid duplicate logs
-    for handler in root_logger.handlers[:]:
-        root_logger.removeHandler(handler)
-
-    # Add stdout handler with JSON formatting
+    
+    # Configure app logger instead of root logger
+    app.logger.setLevel(log_level)
+    
+    # Create and add JSON formatter to app logger
     stdout = logging.StreamHandler(stream=sys.stdout)
     fmt = jsonlogger.JsonFormatter(
         "%(name)s %(asctime)s %(levelname)s %(filename)s %(lineno)s %(process)d %(message)s",
         datefmt="%Y-%m-%dT%H:%M:%SZ",
     )
     stdout.setFormatter(fmt)
-    root_logger.addHandler(stdout)
-
-    # Set formatter to use UTC time
-    for handler in root_logger.handlers:
-        handler.formatter.converter = time.gmtime
+    stdout.formatter.converter = time.gmtime
     
-    # Add a CloudWatch handler if in production
+    # Only add handlers if they don't exist already
+    if not any(isinstance(h, logging.StreamHandler) for h in app.logger.handlers):
+        app.logger.addHandler(stdout)
+    
+    # Make CloudWatch logging non-blocking in production
     if environment == 'production':
-        handler = watchtower.CloudWatchLogHandler(log_group_name=app.name)
+        handler = watchtower.CloudWatchLogHandler(
+            log_group_name=app.name,
+            stream_name=f"{app.name}-{time.strftime('%Y-%m-%d')}",
+            create_log_group=True,
+            # Add these lines to make it non-blocking
+            send_interval=5,  # seconds
+            max_batch_size=10000,
+            max_batch_count=100
+        )
         app.logger.addHandler(handler)
-        logging.getLogger("werkzeug").addHandler(handler)
