@@ -14,7 +14,10 @@ dependencies = [
     "gunicorn (>=23.0.0,<24.0.0)",
     "flask-sqlalchemy (>=3.1.1,<4.0.0)",
     "click (>=8.1.8,<9.0.0)",
-    "ipdb (>=0.13.13,<0.14.0)"
+    "ipdb (>=0.13.13,<0.14.0)",
+    "urllib3 (>=1.25.4,<1.27)", # Required by botocore/boto3, which is required by watchtower - pegged to avoid dependency resolver conflicts with watchtower 
+    "watchtower (>=3.4.0,<4.0.0)",
+    "python-json-logger (>=3.3.0,<4.0.0)",
 ]
 
 
