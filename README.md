@@ -104,5 +104,5 @@ http://domain.com/leading-scorers
 Access leading kepers via:
 
 ```
-http://domain.com/keepers-scorers
+http://domain.com/leading-keepers
 ```
