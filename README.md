@@ -23,27 +23,29 @@ A Python-based web scraping and API project that:
 
 ### Initial Setup
 
-1. Install dependencies
+1. Ensure `poetry` is installed. See [system requirements/installation guide](https://python-poetry.org/docs/#system-requirements)
+
+2. Install dependencies
 
 ```bash
 $ poetry install
 ```
 
-2. Create local `/instance/config.py` based on `/instance/config.example.py`
+3. Create local `/instance/config.py` based on `/instance/config.example.py`
 
-3. Initialize database
+4. Initialize database
 
 ```bash
 $ poetry run flask --app falcons_stats init-db
 ```
 
-4. Seed database with test data
+5. Seed database with test data
 
 ```bash
 $ poetry run flask --app falcons_stats seed-dev-db
 ```
 
-5. Start development server
+6. Start development server
 
 ```bash
 $ poetry run dev
@@ -90,7 +92,7 @@ Note: Most deployment tasks are now automated through GitHub Actions
 
 ## Logging
 
-- Structured JSON logging (mostly followed best practices from [this guide](https://betterstack.com/community/guides/logging/how-to-start-logging-with-python/#structured-json-logging-in-python))
+- Structured, machine-parsable JSON logging (mostly followed best practices from [this guide](https://betterstack.com/community/guides/logging/how-to-start-logging-with-python/#structured-json-logging-in-python))
 - CloudWatch support in production
 
 ## API Endpoints
