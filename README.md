@@ -1,195 +1,108 @@
-## Falcons Stats Project
+# Ottawa Falcons FC Stats Tracker
 
-A Python-based project for scraping, managing, and serving soccer stats for Ottawa Falcons FC. This project includes a SQLite database, API, and scraping scripts for populating and updating the database.
+## Overview
 
-## Prerequisites
+A Python-based web scraping and API project that:
 
-- python (required version defined in `pyproject.toml`)
-- poetry
-- sqlite3
+- Automatically collects soccer statistics from OCSL website
+- Stores data in a SQLite database
+- Provides RESTful API endpoints for Ottawa Falcons team stats
 
-## Setup
+## Tech Stack
 
-### 1. Install dependencies with poetry
+- Python
+- Flask
+- SQLite
+- AWS EC2
+- Nginx
+- Poetry
+- Terraform
+- GitHub Actions
 
-```
+## Local Setup
+
+### Initial Setup
+
+1. Install dependencies
+
+```bash
 $ poetry install
 ```
 
-### 3. Initialize sqlite database
+2. Create local `/instance/config.py` based on `/instance/config.example.py`
 
-```
+3. Initialize database
+
+```bash
 $ poetry run flask --app falcons_stats init-db
 ```
 
-### 4. Start interactive shell
+4. Seed database with test data
 
-```
-$ poetry run flask --app falcons_stats shell
+```bash
+$ poetry run flask --app falcons_stats seed-dev-db
 ```
 
-### 5. To run flask dev server
+5. Start development server
 
-```
+```bash
 $ poetry run dev
 ```
 
-### 6. To debug like pry in ruby/rails. see [docs](https://pypi.org/project/ipdb/) for more info
+### Debugging
 
-```
-import ipdb;ipdb.set_trace()
-```
+Use iPdb for interactive debugging:
 
-## Deploy to production
-
-- Infra described in `main.tf` see the `terraform-plan` is run when pr's are opened against main, `terraform-apply` is run on merges to main
-
-### Using aws session manager
-
-prerequisites:
-
-- session-manager-plugin
-- aws-cli
-
-1. Find instance id (should make this a script really)
-
-```
-aws ec2 describe-instances --filters "Name=tag:Name,Values=FalconsStatsEC2Instance" --query "Reservations[].Instances[].InstanceId" --output text
+```python
+import ipdb; ipdb.set_trace()
 ```
 
-2. connect to target
+## Production Deployment
 
-```
-aws ssm start-session --target <instance_id>
-```
+Automated via GitHub Actions:
 
-### Setting up production server
+- `terraform-plan.yml` runs on pull requests to main
+- `terraform-apply.yml` runs on merges to main, updates infrastucture
+- `deploy.yml` runs on merges to main, updates production code
 
-1. install git
+### Initial Server Setup
 
-```
-sudo dnf install git
-```
+1. Install dependencies
 
-2. install python3
-
-```
-sudo dnf install python3
-```
-
-3. install pipx
-
-```
+```bash
+sudo dnf install git python3
 python3 -m pip install --user pipx
-python3 -m pipx ensurepath
-source ~/.bashrc
-```
-
-4. install poetry with pipx
-
-```
 pipx install poetry
 ```
 
-5. this is a no-no for prod, but I tested this with the dev server, and accessed the api from the servers public dns
+2. Nginx Reverse Proxy Configuration
 
-```
-poetry run flask --app test_api.app run -h 0.0.0.0 -p 8080
-```
-
-6. then, visit
-
-```
-ec2-18-235-149-176.compute-1.amazonaws.com:8080/leading-scorers
-```
-
-### Running Flask API with systemd:
-
-[Running a Flask Application as a service with Systemd](https://blog.miguelgrinberg.com/post/running-a-flask-application-as-a-service-with-systemd)
-
-Example configuration file:
-
-```
-[Unit]
-Description=<a description of your application>
-After=network.target
-
-[Service]
-User=<username>
-WorkingDirectory=<path to your app>
-ExecStart=<app start command>
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Unit configuration files are added in the /etc/systemd/system directory to be seen by systemd. Each time you add or modify a unit file you must tell systemd to refresh its configuration:
-
-```
-$ sudo systemctl daemon-reload
-```
-
-And then you can use the systemctl <action> <service-name> command to start, stop, restart or obtain status for your service:
-
-```
-sudo systemctl start falcons-stats
-sudo systemctl stop falcons-stats
-sudo systemctl restart falcons-stats
-sudo systemctl status falcons-stats
-```
-
-### Setup reverse proxy with nginx to route traffic from port 80 to 8080
-
-Cannot run Gunicorn server on port 80 without root privileges, so a way around that is to run in on 8080, and use nginx as a reverse proxy to route traffic from 80 -> 8080.
-
-1. Install nginx
-
-```
-sudo dnf install nginx -y
-sudo systemctl enable nginx
-sudo systemctl start nginx
-```
-
-2. Add this config file at /etc/nginx/conf.d/falcons-stats.conf
-
-```
+```nginx
 server {
     listen 80;
-    server_name ec2-18-235-149-176.compute-1.amazonaws.com;
-
     location / {
-        proxy_pass http://127.0.0.1:8080;  # Gunicorn/Falcon is running on port 8080
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://127.0.0.1:8080;
     }
 }
 ```
 
-3. test the config to avoid any errors
-
-```
-sudo nginx -t
-```
-
-4. restart nginx to apply changes
-
-```
-sudo systemctl restart nginx
-```
-
-5. bonus: make sure nginx starts automatically when the server restarts:
-
-```
-sudo systemctl enable nginx
-```
+Note: Most deployment tasks are now automated through GitHub Actions
 
 ## Logging
 
-mostly followed this guide: https://betterstack.com/community/guides/logging/how-to-start-logging-with-python/#structured-json-logging-in-python
+- Structured JSON logging (mostly followed best practices from [this guide](https://betterstack.com/community/guides/logging/how-to-start-logging-with-python/#structured-json-logging-in-python))
+- CloudWatch support in production
 
-logs are:
+## API Endpoints
 
-- structured as json, i.e. machine parseable
-- added a cloudwatch handler for production
+Access leading scorers via:
+
+```
+http://domain.com/leading-scorers
+```
+
+Access leading kepers via:
+
+```
+http://domain.com/keepers-scorers
+```
