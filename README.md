@@ -6,7 +6,7 @@ A Python-based web scraping and API project that:
 
 - Automatically collects soccer statistics from OCSL website
 - Stores data in a SQLite database
-- Provides RESTful API endpoints for Ottawa Falcons team stats
+- Provides stats via API endpoints for [Ottawa Falcons](https://ottawafalcons.com/) soccer club teams
 
 ## Tech Stack
 
