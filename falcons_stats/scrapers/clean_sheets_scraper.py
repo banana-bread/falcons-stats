@@ -1,4 +1,4 @@
-from base_scraper import BaseScraper
+from .base_scraper import BaseScraper
 
 class CleanSheetsScraper(BaseScraper):
     def url(self) -> str:

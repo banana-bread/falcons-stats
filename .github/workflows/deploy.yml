@@ -34,7 +34,7 @@ jobs:
               "cd /home/ssm-user/falcons-stats",
               "sudo runuser -l ssm-user -c \"cd /home/ssm-user/falcons-stats && git reset --hard HEAD && git clean -fd && git pull origin main\"",
               "/home/ssm-user/.local/bin/poetry install --no-interaction",
-              "sudo systemctl restart falcons-stats"
+              "sudo systemctl restart falcons-stats-api falcons-stats-scheduler"
             ]}' \
             --query "Command.CommandId" --output text)
 

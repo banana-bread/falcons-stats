@@ -33,7 +33,11 @@ def create_app(test_config=None):
     init_models(app)
 
     # Initialize logging
-    from .logger import init_log_handler, logger
+    from .logger import init_log_handler
     init_log_handler(app)
+
+    # Initialize scheduler
+    from .scheduler import register_commands
+    register_commands(app)
 
     return app

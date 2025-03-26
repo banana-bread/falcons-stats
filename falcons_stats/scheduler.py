@@ -1,11 +1,16 @@
 import time
+import click
+from flask.cli import with_appcontext
 from schedule import every, repeat, run_pending
 from falcons_stats.scrapers import GoalScorersScraper, CleanSheetsScraper, ScraperHttpError
 from falcons_stats.logger import logger
 
 
-@repeat(every().day.at("02:00", "America/Toronto"))
+# @repeat(every().day.at("02:00", "America/Toronto"))
+@repeat(every().minute)
 def run_scrapers():
+    logger.info("Running scrapers")
+    return
     scrapers = [
         GoalScorersScraper(),
         CleanSheetsScraper()
@@ -29,6 +34,14 @@ def run_scrapers():
             # Continue with the next scraper
             continue
 
-while True:
-    run_pending()
-    time.sleep(1)
+@click.command('run-scheduler')
+@with_appcontext
+def run_scheduler_command():
+    logger.info("Starting scheduler")
+
+    while True:
+        run_pending()
+        time.sleep(1)  
+
+def register_commands(app):
+    app.cli.add_command(run_scheduler_command)
