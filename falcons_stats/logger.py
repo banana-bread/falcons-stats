@@ -1,6 +1,6 @@
 from flask import Flask
 import sys, logging, time, socket, watchtower
-from datetime import datetime
+from datetime import datetime, timezone
 from pythonjsonlogger import jsonlogger
 
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ def init_log_handler(app: Flask):
     # Add a CloudWatch handler if in production
     if environment == 'production':
         hostname = socket.gethostname()
-        timestamp = datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d-%H-%M-%S')
+        timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%d-%H-%M-%S')
 
         log_stream_name = f"{app.name}-{hostname}-{timestamp}"
 
