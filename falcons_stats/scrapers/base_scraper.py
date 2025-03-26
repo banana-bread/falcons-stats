@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import requests
+from .exceptions import ScraperHttpError
 
 class BaseScraper(ABC):
 
@@ -9,7 +10,6 @@ class BaseScraper(ABC):
             "e2elc_gamesdivisionid": None,
             "e2elc_top10only": "false",
         }
-        self.division_goal_scorers = {}
 
     @abstractmethod
     def url(self) -> str:
@@ -23,11 +23,12 @@ class BaseScraper(ABC):
     def persist_parsed_data(self, parsed_data):
         pass
 
-    def execute(self):
+    def run(self):
         raw_data = self.get_raw_data()
-        parsed_data = self.parse(raw_data)
-        self.persist(parsed_data)
+        parsed_data = self.parse_html_response(raw_data)
+        self.persist_parsed_data(parsed_data)
     
+    # TODO: may make sense to pass div_ids as params to the constructor, will leave for now though
     def divisions(self):
         # TODO: just return all divs from db pretty much
         return {
@@ -37,12 +38,15 @@ class BaseScraper(ABC):
         }
 
     def get_raw_data(self):
+        result = {}
         for div_id in self.divisions():
             self.cookies["e2elc_gamesdivisionid"] = str(div_id)
             try:
-                return self.session.get(self.url(), cookies=self.cookies).text
+                response = self.session.get(self.url(), cookies=self.cookies)
+                response.raise_for_status()
+                result[div_id] = response.text
             except requests.exceptions.RequestException as e:
-                # TODO: this should be logged properly... figure out logging
-                print(f"Error: {e}")
+                raise ScraperHttpError(original_error=e, division_id=div_id, url=self.url())
+        return result
 
         
