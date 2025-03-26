@@ -27,3 +27,5 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 dev = "falcons_stats.scripts:run_dev_server"
+init_db = "falcons_stats.scripts:run_init_db"
+seed_dev_db = "falcons_stats.scripts:run_seed_dev_db"

@@ -36,13 +36,13 @@ $ poetry install
 4. Initialize database
 
 ```bash
-$ poetry run flask --app falcons_stats init-db
+$ poetry run init_db
 ```
 
 5. Seed database with test data
 
 ```bash
-$ poetry run flask --app falcons_stats seed-dev-db
+$ poetry run seed_dev_db
 ```
 
 6. Start development server
