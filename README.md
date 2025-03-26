@@ -8,6 +8,8 @@ A Python-based web scraping and API project that:
 - Stores data in a SQLite database
 - Provides stats via API endpoints for [Ottawa Falcons](https://ottawafalcons.com/) soccer club teams
 
+> **Note:** This project is currently under active development. Some features may change or be incomplete.
+
 ## Tech Stack
 
 - Python
@@ -28,7 +30,7 @@ A Python-based web scraping and API project that:
 2. Install dependencies
 
 ```bash
-$ poetry install
+poetry install
 ```
 
 3. Create local `/instance/config.py` based on `/instance/config.example.py`
@@ -36,19 +38,19 @@ $ poetry install
 4. Initialize database
 
 ```bash
-$ poetry run init_db
+poetry run init_db
 ```
 
 5. Seed database with test data
 
 ```bash
-$ poetry run seed_dev_db
+poetry run seed_dev_db
 ```
 
 6. Start development server
 
 ```bash
-$ poetry run dev
+poetry run dev
 ```
 
 ### Debugging
@@ -160,3 +162,19 @@ Access leading kepers via:
 ```
 http://domain.com/leading-keepers
 ```
+
+## Project Roadmap
+
+### Current TODOs
+
+- [ ] Replace mock data with actual data in scrapers (waiting on season to start for HTML tables to be present)
+- [ ] Finish adding seeds for all Falcons teams/divs (waiting on all teams to register)
+- [ ] Better error handling and logging (scrapers, api endpoints)
+
+### Future Enhancements
+
+- [ ] Add support for database migrations
+- [ ] Scrape more data (schedules, team standings, etc)
+- [ ] Capture stats from all divisions/teams
+- [ ] Run scheduler service as more granular background jobs
+- [ ] Enhance observability with performance metrics, execution tracking, and resource monitoring for scheduled tasks
