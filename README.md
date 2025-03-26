@@ -53,7 +53,7 @@ $ poetry run dev
 
 ### Debugging
 
-Use iPdb for interactive debugging:
+Use [iPdb](https://pypi.org/project/ipdb/) for interactive debugging:
 
 ```python
 import ipdb; ipdb.set_trace()

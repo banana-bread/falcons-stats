@@ -1,7 +1,5 @@
 from base_scraper import BaseScraper
 
-SHUTOUTS_URL = "https://ocslonline.ca/shutouts/"
-
 class GoalScorersScraper(BaseScraper):
     def url(self) -> str:
         return "https://ocslonline.ca/goal-scorers/"
