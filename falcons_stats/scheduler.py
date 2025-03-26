@@ -6,7 +6,7 @@ from falcons_stats.scrapers import GoalScorersScraper, CleanSheetsScraper, Scrap
 from falcons_stats.logger import logger
 
 
-@repeat(every().day.at("02:00", "America/Toronto"))
+@repeat(every().day.at("06:00")) # UTC time
 def run_scrapers():
     logger.info("Running scrapers... but not really because this is a dummy function until we implement the real thing")
     return
