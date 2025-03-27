@@ -154,13 +154,13 @@ Note: Most deployment tasks are now automated through GitHub Actions
 Access leading scorers via:
 
 ```
-http://domain.com/leading-scorers
+/leading-scorers
 ```
 
 Access leading kepers via:
 
 ```
-http://domain.com/leading-keepers
+/leading-keepers
 ```
 
 ## Project Roadmap
@@ -170,6 +170,7 @@ http://domain.com/leading-keepers
 - [ ] Replace mock data with actual data in scrapers (waiting on season to start for HTML tables to be present)
 - [ ] Finish adding seeds for all Falcons teams/divs (waiting on all teams to register)
 - [ ] Better error handling and logging (scrapers, api endpoints)
+- [ ] Add tests, and include in pipeline
 
 ### Future Enhancements
 
