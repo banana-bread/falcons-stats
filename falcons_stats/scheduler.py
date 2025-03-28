@@ -2,7 +2,6 @@ import time
 import click
 from flask.cli import with_appcontext
 from schedule import every, repeat, run_pending
-from falcons_stats.scrapers import GoalScorersScraper, CleanSheetsScraper, ScraperHttpError
 from falcons_stats.logger import logger
 
 
@@ -10,28 +9,10 @@ from falcons_stats.logger import logger
 def run_scrapers():
     logger.info("Running scrapers... but not really because this is a dummy function until we implement the real thing")
     return
-    scrapers = [
-        GoalScorersScraper(),
-        CleanSheetsScraper()
-    ]
 
-    for scraper in scrapers:
-        try:
-            scraper.run()
-        except ScraperHttpError as e:
-            logger.error(f"Scraper {scraper.__class__.__name__} failed", extra={
-                "division_id": e.division_id,
-                "url": e.url,
-                "error": str(e.original_error)
-            })
-            # Continue with the next scraper
-            continue
-        except Exception as e:
-            logger.error(f"Unexpected error in scraper {scraper.__class__.__name__}", extra={
-                "error": str(e)
-            })
-            # Continue with the next scraper
-            continue
+    from falcons_stats.services import ScraperService
+    results = ScraperService.run_scrapers()
+    logger.info(f"Scraping completed. Success: {len(results['success'])}, Failed: {len(results['failed'])}")
 
 @click.command('run-scheduler')
 @with_appcontext
