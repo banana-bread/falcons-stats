@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 import requests
 from .exceptions import ScraperHttpError
-
+from falcons_stats.queries import get_divisions
+from falcons_stats.models.base import db
 class BaseScraper(ABC):
 
     def __init__(self):
@@ -30,12 +31,7 @@ class BaseScraper(ABC):
     
     # TODO: may make sense to pass div_ids as params to the constructor, will leave for now though
     def divisions(self):
-        # TODO: just return all divs from db pretty much
-        return {
-            67: "Men C2",
-            92: "Men R2",
-            29: "Women R2",
-        }
+        return db.session.execute(get_divisions()).all()
 
     def get_raw_data(self):
         result = {}

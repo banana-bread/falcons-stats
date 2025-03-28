@@ -19,6 +19,7 @@ dependencies = [
     "watchtower (>=3.4.0,<4.0.0)",
     "python-json-logger (>=3.3.0,<4.0.0)",
     "schedule (>=1.2.2,<2.0.0)",
+    "pytest (>=8.3.5,<9.0.0)",
 ]
 
 

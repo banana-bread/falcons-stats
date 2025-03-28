@@ -1,6 +1,6 @@
 from sqlalchemy import select, desc
 from sqlalchemy.orm import joinedload
-from .models import Player, Keeper, Team
+from .models import Player, Keeper, Team, Division
 
 def get_top_scorers(limit:int=10) -> list[dict]:
     return (
@@ -19,3 +19,6 @@ def get_top_keepers(limit:int=10) -> list[dict]:
             .order_by(desc(Keeper.clean_sheets))
             .limit(limit)
     )
+
+def get_divisions() -> list[dict]:
+    return select(Division)
