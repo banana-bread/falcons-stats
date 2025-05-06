@@ -74,9 +74,11 @@ Automated via GitHub Actions:
 1. Install dependencies
 
 ```bash
-sudo dnf install git python3
+sudo dnf install git python3 python3-pip
 python3 -m pip install --user pipx
+python3 -m pipx ensurepath
 pipx install poetry
+sudo dnf install nginx
 ```
 
 2. Setup api and scheduler services with systemd
@@ -133,6 +135,8 @@ sudo systemctl status falcons-stats-scheduler
 
 3. Nginx Reverse Proxy Configuration
 
+`/etc/nginx/conf.d/falcons-stats-api.conf`
+
 ```nginx
 server {
     listen 80;
@@ -141,6 +145,8 @@ server {
     }
 }
 ```
+
+Then run `sudo systemctl enable nginx` to symlink the config file to systemd.
 
 Note: Most deployment tasks are now automated through GitHub Actions
 

@@ -112,8 +112,8 @@ resource "aws_network_interface" "falcons_stats_interface" {
 
 # EC2 instance with explicit IAM role attachment
 resource "aws_instance" "falcons_stats_server" {
-  ami           = "ami-05b10e08d247fb927"
-  instance_type = "t2.micro"
+  ami           = "ami-0bc72bd3b8ba0b59d"
+  instance_type = "t4g.nano"
   
   # Attach network interface with public IP
   network_interface {
