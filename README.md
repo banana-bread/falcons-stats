@@ -74,16 +74,14 @@ Automated via GitHub Actions:
 1. Install dependencies
 
 ```bash
-sudo dnf install git python3 python3-pip
-python3 -m pip install --user pipx
-python3 -m pipx ensurepath
-pipx install poetry
+sudo dnf install git python3
+pip install poetry
 sudo dnf install nginx
 ```
 
 2. Setup api and scheduler services with systemd
 
-`falcons-stats-api.service`
+`/etc/systemd/system/falcons-stats-api.service`
 
 ```ini
 [Unit]
@@ -92,15 +90,15 @@ After=network.target
 
 [Service]
 User=ssm-user
-WorkingDirectory=<working-dir>
-ExecStart=poetry run gunicorn --workers 2 --bind 0.0.0.0:8080 'falcons_stats:create_app()'
+WorkingDirectory=/home/ssm-user/falcons-stats
+ExecStart=/home/ssm-user/.local/bin/poetry run gunicorn --workers 2 --bind 0.0.0.0:8080 'falcons_stats:create_app()'
 Restart=always
 
 [Install]
 WantedBy=multi-user.target
 ```
 
-`falcons-stats-scheduler.service`
+`/etc/systemd/system/falcons-stats-scheduler.service`
 
 ```ini
 [Unit]
@@ -147,6 +145,8 @@ server {
 ```
 
 Then run `sudo systemctl enable nginx` to symlink the config file to systemd.
+
+4. Copy `instance/config.example.py` to `instance/config.py` and update with production values
 
 Note: Most deployment tasks are now automated through GitHub Actions
 
