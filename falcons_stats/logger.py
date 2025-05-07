@@ -38,6 +38,7 @@ def init_log_handler(app: Flask):
         log_stream_name = f"{app.name}-{hostname}-{timestamp}"
 
         handler = watchtower.CloudWatchLogHandler(
+            region_name=app.config.get('AWS_REGION', 'us-east-1'),
             log_group_name=app.name,
             log_stream_name=log_stream_name
         )
