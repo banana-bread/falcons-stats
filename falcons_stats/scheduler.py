@@ -5,7 +5,8 @@ from schedule import every, repeat, run_pending
 from falcons_stats.logger import logger
 
 
-@repeat(every().day.at("06:00")) # UTC time
+@repeat(every().minute) # Run every minute
+# @repeat(every().day.at("06:00")) # UTC
 def run_scrapers():
     logger.info("Running scrapers... but not really because this is a dummy function until we implement the real thing")
     return
@@ -21,7 +22,7 @@ def run_scheduler_command():
 
     while True:
         run_pending()
-        time.sleep(1)  
+        time.sleep(1)
 
 def register_commands(app):
     app.cli.add_command(run_scheduler_command)
