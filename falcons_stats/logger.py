@@ -2,6 +2,7 @@ from flask import Flask
 import sys, logging, time, socket, watchtower
 from datetime import datetime, timezone
 from pythonjsonlogger import jsonlogger
+import boto3
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +40,8 @@ def init_log_handler(app: Flask):
 
         handler = watchtower.CloudWatchLogHandler(
             log_group_name=app.name,
-            log_stream_name=log_stream_name
+            log_stream_name=log_stream_name,
+            boto3_client=boto3.client("logs", region_name=app.config.get('AWS_DEFAULT_REGION', 'us-east-1'))
         )
         handler.setFormatter(fmt)
         app.logger.addHandler(handler)
