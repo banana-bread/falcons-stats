@@ -11,19 +11,22 @@ def run_init_db():
 def run_seed_dev_db():
     run_in_project_root(["flask", "--app", "falcons_stats", "seed-dev-db"])
 
+def run_seed_prod_db():
+    run_in_project_root(["flask", "--app", "falcons_stats", "seed-prod-db"])
+
 def run_scheduler():
     run_in_project_root(["flask", "--app", "falcons_stats", "run-scheduler"])
 
 def find_project_root():
     """Find the project root by looking for pyproject.toml"""
     current_dir = Path.cwd()
-    
+
     # Look in current directory and all parents
     while current_dir != current_dir.parent:
         if (current_dir / "pyproject.toml").exists():
             return str(current_dir)
         current_dir = current_dir.parent
-        
+
     # If we can't find it, default to current directory
     return str(Path.cwd())
 
