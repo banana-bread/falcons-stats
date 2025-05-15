@@ -47,7 +47,7 @@ class BaseScraper(ABC):
                 }])
                 try:
                     logger.info(f"Scraping division {division['name']}")
-                    page.goto(self.url())
+                    page.goto(self.url(), timeout=60000, wait_until="domcontentloaded")
                     page.wait_for_load_state("networkidle")
                     raw_data = page.content()
                 except Exception as e:

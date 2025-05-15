@@ -7,9 +7,7 @@ from falcons_stats.logger import logger
 
 @repeat(every().day.at("06:00")) # UTC
 def run_scrapers():
-    logger.info("Running scrapers... but not really because this is a dummy function until we implement the real thing")
-    return
-
+    logger.info("Running scrapers")
     from falcons_stats.services import ScraperService
     results = ScraperService.run_scrapers()
     logger.info(f"Scraping completed. Success: {len(results['success'])}, Failed: {len(results['failed'])}")
