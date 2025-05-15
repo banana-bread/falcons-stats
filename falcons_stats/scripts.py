@@ -17,6 +17,22 @@ def run_seed_prod_db():
 def run_scheduler():
     run_in_project_root(["flask", "--app", "falcons_stats", "run-scheduler"])
 
+def run_scraper():
+    """Run a specific scraper by name"""
+    import sys
+    if len(sys.argv) < 2:
+        print("Error: Scraper name is required")
+        print("Usage: poetry run scraper <scraper_name>")
+        print("To see available scrapers, run: poetry run list-scrapers")
+        return
+
+    scraper_name = sys.argv[1]
+    run_in_project_root(["flask", "--app", "falcons_stats", "run-scraper", scraper_name])
+
+def list_scrapers():
+    """List all available scrapers"""
+    run_in_project_root(["flask", "--app", "falcons_stats", "list-scrapers"])
+
 def find_project_root():
     """Find the project root by looking for pyproject.toml"""
     current_dir = Path.cwd()

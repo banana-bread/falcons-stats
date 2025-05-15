@@ -28,3 +28,16 @@ class StatsService:
             }
             for keeper, team_name in results
         ]
+    
+    @staticmethod
+    def get_all_divisions() -> List[dict]:  
+        from falcons_stats.queries import get_all_divisions
+        results = db.session.execute(get_all_divisions()).unique().scalars().all()
+        return [
+            {
+                'id': division.id,
+                'name': division.name,
+                'teams': [{'id': team.id,'name': team.name} for team in division.teams]
+            }
+            for division in results
+        ]

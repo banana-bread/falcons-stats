@@ -8,7 +8,8 @@ logger = logging.getLogger(__name__)
 
 def init_log_handler(app: Flask):
     environment = app.config.get('ENVIRONMENT', 'production')
-    log_level = logging.DEBUG if environment == 'development' else logging.INFO
+    # log_level = logging.DEBUG if environment == 'development' else logging.INFO
+    log_level = logging.INFO
 
     # Configure root logger to use JSON format for console output
     root_logger = logging.getLogger()

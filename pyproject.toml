@@ -19,6 +19,8 @@ dependencies = [
     "watchtower (>=3.4.0,<4.0.0)",
     "python-json-logger (>=3.3.0,<4.0.0)",
     "schedule (>=1.2.2,<2.0.0)",
+    "playwright (>=1.52.0,<2.0.0)",
+    "beautifulsoup4 (>=4.13.4,<5.0.0)",
 ]
 
 
@@ -32,3 +34,5 @@ init_db = "falcons_stats.scripts:run_init_db"
 seed_dev_db = "falcons_stats.scripts:run_seed_dev_db"
 seed_prod_db = "falcons_stats.scripts:run_seed_prod_db"
 scheduler = "falcons_stats.scripts:run_scheduler"
+scraper = "falcons_stats.scripts:run_scraper"
+list-scrapers = "falcons_stats.scripts:list_scrapers"

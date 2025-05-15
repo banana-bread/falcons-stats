@@ -40,4 +40,8 @@ def create_app(test_config=None):
     from .scheduler import register_commands
     register_commands(app)
 
+    # Initialize scrapers
+    from .scrapers import register_commands
+    register_commands(app)
+
     return app
