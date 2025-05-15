@@ -1,7 +1,7 @@
 from flask import Flask
 import sys, logging, time, socket, watchtower
 from datetime import datetime, timezone
-from pythonjsonlogger import jsonlogger
+from pythonjsonlogger import json
 import boto3
 
 logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ def init_log_handler(app: Flask):
 
     # Add stdout handler with JSON formatting
     stdout = logging.StreamHandler(stream=sys.stdout)
-    fmt = jsonlogger.JsonFormatter(
+    fmt = json.JsonFormatter(
         "%(name)s %(asctime)s %(levelname)s %(filename)s %(lineno)s %(process)d %(message)s",
         datefmt="%Y-%m-%dT%H:%M:%SZ",
     )
