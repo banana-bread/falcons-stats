@@ -173,9 +173,9 @@ Access leading kepers via:
 
 ### Current TODOs
 
-- [ ] Replace mock data with actual data in scrapers (waiting on season to start for HTML tables to be present)
-- [ ] Finish adding seeds for all Falcons teams/divs (waiting on all teams to register)
-- [ ] Better error handling and logging (scrapers, api endpoints)
+- [x] Replace mock data with actual data in scrapers (waiting on season to start for HTML tables to be present)
+- [x] Finish adding seeds for all Falcons teams/divs (waiting on all teams to register)
+- [x] Better error handling and logging (scrapers, api endpoints)
 - [ ] Add tests, and include in pipeline
 
 ### Future Enhancements
