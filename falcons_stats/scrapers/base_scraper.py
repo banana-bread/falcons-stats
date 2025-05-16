@@ -30,21 +30,15 @@ class BaseScraper(ABC):
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch(headless=True)
             context = browser.new_context()
-            page = context.new_page()
             domain = urlparse(self.url()).netloc
 
             for division in StatsService.get_all_divisions():
-                context.add_cookies([{
-                    "name": "e2elc_gamesdivisionid",
-                    "value": str(division['id']),
-                    "domain": domain,
-                    "path": "/",
-                },{
-                    "name": "e2elc_top10only",
-                    "value": "false",
-                    "domain": domain,
-                    "path": "/",
-                }])
+                page = context.new_page()
+                context.clear_cookies()
+                context.add_cookies([
+                    {"name": "e2elc_gamesdivisionid","value": str(division['id']),"domain": domain,"path": "/",},
+                    {"name": "e2elc_top10only","value": "false","domain": domain,"path": "/",}
+                ])
                 try:
                     logger.info(f"Scraping division {division['name']}")
                     page.goto(self.url(), timeout=60000, wait_until="domcontentloaded")
@@ -57,7 +51,9 @@ class BaseScraper(ABC):
                         "error": str(e)
                     })
                     raise ScraperHttpError(original_error=e, division_id=division['id'], url=self.url())
-                
+                finally:
+                    page.close()
+
                 try:
                     logger.info(f"Parsing HTML for division {division['name']}")
                     parsed_data = self.parse_html_response(raw_data, division['teams'])
