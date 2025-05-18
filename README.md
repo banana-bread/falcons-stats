@@ -116,22 +116,12 @@ RestartSec=10
 WantedBy=multi-user.target
 ```
 
-Enable and Start Services
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable falcons-stats-api falcons-stats-scheduler
-sudo systemctl start falcons-stats-api falcons-stats-scheduler
-```
-
-Check Service Status
-
-```bash
-sudo systemctl status falcons-stats-api
-sudo systemctl status falcons-stats-scheduler
-```
-
 3. Nginx Reverse Proxy Configuration
+
+```
+sudo apt update
+sudo apt install -y nginx
+```
 
 `/etc/nginx/conf.d/falcons-stats-api.conf`
 
@@ -144,9 +134,30 @@ server {
 }
 ```
 
-Then run `sudo systemctl enable nginx` to symlink the config file to systemd.
-
 4. Copy `instance/config.example.py` to `instance/config.py` and update with production values
+
+5. Run these commands to start services:
+
+```bash
+
+```
+
+Enable and Start Services
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable falcons-stats-api falcons-stats-scheduler nginx
+sudo systemctl start falcons-stats-api falcons-stats-scheduler nginx
+```
+
+Now, services are handled by systemd and should restart whenever server restarts/crashes.
+
+Check Service Status
+
+```bash
+sudo systemctl status falcons-stats-api
+sudo systemctl status falcons-stats-scheduler
+```
 
 Note: Most deployment tasks are now automated through GitHub Actions
 

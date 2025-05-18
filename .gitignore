@@ -10,6 +10,10 @@ dist
 **/*.py[cod]
 **/*$py.class
 
+# Logs
+logs/
+*.log
+
 # Local .terraform directories
 **/.terraform/*
 
