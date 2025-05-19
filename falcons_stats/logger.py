@@ -5,9 +5,27 @@ from pythonjsonlogger import json
 
 logger = logging.getLogger(__name__)
 
+class DailyRotatingFileHandler(logging.FileHandler):
+    def __init__(self, filename, mode='a', encoding=None, delay=False):
+        self.current_date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+        self.base_filename = filename
+        self.current_filename = self._get_filename()
+        super().__init__(self.current_filename, mode, encoding, delay)
+
+    def _get_filename(self):
+        return self.base_filename.replace('{date}', self.current_date)
+
+    def emit(self, record):
+        current_date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+        if current_date != self.current_date:
+            self.current_date = current_date
+            self.close()
+            self.baseFilename = self._get_filename()
+            self._open()
+        super().emit(record)
+
 def init_log_handler(app: Flask):
     environment = app.config.get('ENVIRONMENT', 'production')
-    # log_level = logging.DEBUG if environment == 'development' else logging.INFO
     log_level = logging.INFO
 
     # Configure root logger to use JSON format for console output
@@ -35,22 +53,19 @@ def init_log_handler(app: Flask):
     log_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'logs')
     os.makedirs(log_dir, exist_ok=True)
     
-    hostname = socket.gethostname()
-    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%d')
-
-    # Create log file handlers
-    app_log_file = os.path.join(log_dir, f"{app.name}-{timestamp}.log")
+    # Create log file handlers with date placeholder
+    app_log_file = os.path.join(log_dir, f"{app.name}-{{date}}.log")
     
     # Application log handler
-    file_handler = logging.FileHandler(app_log_file)
+    file_handler = DailyRotatingFileHandler(app_log_file)
     file_handler.setFormatter(fmt)
     app.logger.addHandler(file_handler)
     
     # Werkzeug (web server) log handler
-    werkzeug_log_file = os.path.join(log_dir, f"werkzeug-{timestamp}.log")
-    werkzeug_handler = logging.FileHandler(werkzeug_log_file)
+    werkzeug_log_file = os.path.join(log_dir, f"werkzeug-{{date}}.log")
+    werkzeug_handler = DailyRotatingFileHandler(werkzeug_log_file)
     werkzeug_handler.setFormatter(fmt)
     logging.getLogger("werkzeug").addHandler(werkzeug_handler)
     
     # Log the startup
-    app.logger.info(f"Application logging to {app_log_file}")
+    app.logger.info(f"Application logging to {file_handler.current_filename}")
