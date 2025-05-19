@@ -40,7 +40,7 @@ class BaseScraper(ABC):
                     {"name": "e2elc_top10only","value": "false","domain": domain,"path": "/",}
                 ])
                 try:
-                    logger.info(f"Scraping division {division['name']}")
+                    logger.debug(f"Scraping division {division['name']}")
                     page.goto(self.url(), timeout=60000, wait_until="domcontentloaded")
                     page.wait_for_load_state("networkidle")
                     raw_data = page.content()
@@ -55,7 +55,7 @@ class BaseScraper(ABC):
                     page.close()
 
                 try:
-                    logger.info(f"Parsing HTML for division {division['name']}")
+                    logger.debug(f"Parsing HTML for division {division['name']}")
                     parsed_data = self.parse_html_response(raw_data, division['teams'])
                 except Exception as e:
                     logger.error(f"Error parsing HTML for division {division['name']}", extra={
@@ -98,10 +98,6 @@ class BaseScraper(ABC):
             })
         
         return results
-    
-    # def refresh_stats(self):
-    #     import ipdb; ipdb.set_trace()
-    #     pass
 
     def refresh_stats(self):
         from falcons_stats.models.base import db
