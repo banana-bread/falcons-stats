@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 def run_dev_server():
-    run_in_project_root(["flask", "--app", "falcons_stats", "run", "--debug"])
+    run_in_project_root(["flask", "--app", "falcons_stats", "run", "--debug", "--port", "8000"])
 
 def run_init_db():
     run_in_project_root(["flask", "--app", "falcons_stats", "init-db"])

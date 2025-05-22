@@ -7,7 +7,7 @@ def get_top_scorers(limit:int=10) -> list[dict]:
         select(Player, Team.name.label('team_name'))
             .join(Team, Player.team_id == Team.id)
             .options(joinedload(Player.team))
-            .order_by(desc(Player.goals))
+            .order_by(desc(Player.goals), Player.name)
             .limit(limit)
     )
 
@@ -15,7 +15,7 @@ def get_top_keepers(limit:int=10) -> list[dict]:
     return (
         select(Keeper, Team.name.label('team_name'))
             .join(Team, Keeper.team_id == Team.id)
-            .options(joinedload(Keeper.team))
+            .options(joinedload(Keeper.team), Keeper.name)
             .order_by(desc(Keeper.clean_sheets))
             .limit(limit)
     )
