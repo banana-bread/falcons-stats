@@ -15,8 +15,8 @@ def get_top_keepers(limit:int=10) -> list[dict]:
     return (
         select(Keeper, Team.name.label('team_name'))
             .join(Team, Keeper.team_id == Team.id)
-            .options(joinedload(Keeper.team), Keeper.name)
-            .order_by(desc(Keeper.clean_sheets))
+            .options(joinedload(Keeper.team))
+            .order_by(desc(Keeper.clean_sheets), Keeper.name)
             .limit(limit)
     )
 
