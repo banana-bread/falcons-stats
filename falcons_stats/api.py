@@ -1,6 +1,5 @@
 from flask import Blueprint
 from falcons_stats.services import StatsService
-from falcons_stats.logger import logger
 
 api = Blueprint('api', __name__)
 

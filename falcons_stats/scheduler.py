@@ -5,7 +5,7 @@ from schedule import every, repeat, run_pending
 from falcons_stats.logger import logger
 
 
-@repeat(every().day.at("06:00").at("18:00")) # UTC
+@repeat(every(5).hours)
 def run_scrapers():
     logger.info("Running scrapers")
     from falcons_stats.services import ScraperService
