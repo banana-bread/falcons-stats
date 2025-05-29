@@ -30,6 +30,16 @@ class StatsService:
         ]
     
     @staticmethod
+    def get_club_stats(limit: int = 10) -> List[dict]:
+        from falcons_stats.queries import get_total_clean_sheets, get_total_goals
+        clean_sheets = db.session.execute(get_total_clean_sheets()).scalar()
+        goals = db.session.execute(get_total_goals()).scalar()
+        return {
+            'total_clean_sheets': clean_sheets,
+            'total_goals': goals
+        }
+
+    @staticmethod
     def get_all_divisions() -> List[dict]:  
         from falcons_stats.queries import get_all_divisions
         results = db.session.execute(get_all_divisions()).unique().scalars().all()

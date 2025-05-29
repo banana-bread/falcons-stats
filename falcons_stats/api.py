@@ -10,3 +10,7 @@ def leading_scorers():
 @api.route('/leading-keepers')
 def clean_sheets():
     return {'keepers': StatsService.get_top_keepers()}
+
+@api.route('/club-stats')
+def club_stats():
+    return {'club_stats': StatsService.get_club_stats()}

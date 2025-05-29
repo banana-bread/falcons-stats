@@ -1,4 +1,4 @@
-from sqlalchemy import select, desc
+from sqlalchemy import select, desc, func
 from sqlalchemy.orm import joinedload
 from .models import Player, Keeper, Team, Division
 
@@ -19,6 +19,12 @@ def get_top_keepers(limit:int=10) -> list[dict]:
             .order_by(desc(Keeper.clean_sheets), Keeper.name)
             .limit(limit)
     )
+
+def get_total_clean_sheets() -> int:
+    return select(func.sum(Keeper.clean_sheets))
+
+def get_total_goals() -> int:
+    return select(func.sum(Player.goals))
 
 def get_all_divisions() -> list[dict]:
     return (
